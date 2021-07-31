@@ -18,6 +18,24 @@
                         Add New Employees
                     </button>
                 </h2>
+
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{message}}
+                </div>
+
+                {% endfor %}
+
+                {% endif %}
+
+                {% endwith %}
+
                 <table class="table table-info table-striped">
                     <tr class="table-dark">
                         <th>ID</th>
@@ -26,100 +44,105 @@
                         <th>Phone</th>
                         <th>Action</th>
                     </tr>
+
+                    {% for row in employees %}
                     <tr>
-                        <td>01</td>
-                        <td>Alex</td>
-                        <td>happy.dyakonov@gmail.com</td>
-                        <td>7(916)750-55-51</td>
+                        <td>{{row.id}}</td>
+                        <td>{{row.name}}</td>
+                        <td>{{row.email}}</td>
+                        <td>{{row.phone}}</td>
+
                         <td>
-                            <a href=""
+                            <a href="/update/{{row.id}}"
                                class="btn btn-warning btn-xs"
                                data-bs-toggle="modal"
-                               data-bs-target="#modaledit">
+                               data-bs-target="#modaledit{{row.id}}">
                                 Edit</a>
-                            <a href=""
+                            <a href="/delete/{{row.id}}"
                                class="btn btn-danger btn-xs"
-                               onclick="return confirm('Are You Sure To Delete ?')">
+                               onclick="return confirm('Are You Sure To Delete {{row.name}}?')">
                                 Delete
                             </a>
                         </td>
                     </tr>
-                </table>
 
+                    <!-- Modal Edit Employee-->
+                    <div class="modal fade" id="modaledit{{row.id}}" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
-                <!-- Modal Edit Employee-->
-                <div class="modal fade" id="modaledit" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+                                <form action="{{url_for('update')}}" method="POST">
 
-                            <div class="modal-header">
-                                <h4 class="modal-title">Update Information</h4>
-                            </div>
-
-                            <div class="modal-body">
-                                <form action="" method="POST">
-                                    <div class="form-group">
-                                        <label>Name:</label>
-                                        <input name="id" type="hidden" value="">
-                                        <input class="form-control" name="name" type="text" value="Geekscoders">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Update Information</h4>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Email:</label>
-                                        <input class="form-control" name="email" type="text" value="geeks@gmail.com">
+                                    <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Name:</label>
+                                                <input name="id" type="hidden" value="{{row.id}}">
+                                                <input class="form-control" name="name" type="text" value="{{row.name}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Email:</label>
+                                                <input class="form-control" name="email" type="text" value="{{row.email}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Phone:</label>
+                                                <input class="form-control" name="phone" type="text" value="{{row.phone}}">
+                                            </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Phone:</label>
-                                        <input class="form-control" name="phone" type="text" value="858558">
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" type="submit">Update</button>
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
                                     </div>
 
                                 </form>
-                            </div>
+                            </div> <!-- class="modal-content" -->
+                        </div> <!-- class="modal-dialog" -->
+                    </div> <!-- class="modal fade" -->
 
-                            <div class="modal-footer">
-                                <button class="btn btn-primary" type="submit">Update</button>
-                                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                            </div>
-
-                        </div> <!-- class="modal-content" -->
-                    </div> <!-- class="modal-dialog" -->
-                </div> <!-- class="modal fade" -->
-
+                    {% endfor %}
+                </table>
 
                 <!-- Modal Add Employee -->
                 <div class="modal fade" id="mymodal" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
 
-                            <div class="modal-header">
-                                <h4 class="modal-title">Add Employee</h4>
-                            </div>
+                            <form action="{{url_for('insert')}}" method="POST">
 
-                            <div class="modal-body">
-                                <form action="" method="POST">
-                                    <div class="form-group">
-                                        <label>Name:</label>
-                                        <input class="form-control" name="name" required="1" type="text">
-                                    </div>
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Add Employee</h4>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label>Email:</label>
-                                        <input class="form-control" name="email" required="1" type="email">
-                                    </div>
+                                <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Name:</label>
+                                            <input class="form-control" name="name" required="1" type="text">
+                                        </div>
 
-                                    <div class="form-group">
-                                        <label>Phone:</label>
-                                        <input class="form-control" name="phone" required="1" type="number">
-                                    </div>
+                                        <div class="form-group">
+                                            <label>Email:</label>
+                                            <input class="form-control" name="email" required="1" type="email">
+                                        </div>
 
-                                </form>
-                            </div>
+                                        <div class="form-group">
+                                            <label>Phone:</label>
+                                            <input class="form-control" name="phone" required="1" type="number">
+                                        </div>
 
-                            <div class="modal-footer">
-                                <button class="btn btn-primary" type="submit">Add Employee</button>
-                                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                            </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="submit">Add Employee</button>
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                                </div>
+
+                            </form>
 
                         </div> <!-- class="modal-content" -->
                     </div> <!-- class="modal-dialog" -->
